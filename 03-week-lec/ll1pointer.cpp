@@ -11,7 +11,6 @@ class linklist
 {
 	protected:
 		Node *head;
-		Node *tail;
 	public:
 		linklist();
 		~linklist();
@@ -19,10 +18,10 @@ class linklist
 		void addInTheStart(int info);
 		void addMultiple(int info, int val);
 		void addFirst(int info, int val);
-		void delMultiple(int info);
 		void delFirst(int info);
-		void searchMultiple(int info);
-		void searchFirst(int info);
+		void delMultiple(int info);
+		void SearchFirst(int info);
+		void SearchMultiple(int info);
 		void display();
 };
 
@@ -30,7 +29,6 @@ class linklist
 linklist::linklist()
 {
 	head = NULL;
-	tail = NULL;
 }
 
 linklist::~linklist()
@@ -46,6 +44,7 @@ linklist::~linklist()
 	}
 }
 
+
 void linklist::addInTheStart(int info)
 {
 	Node *temp = new Node;
@@ -54,7 +53,6 @@ void linklist::addInTheStart(int info)
 	if(head == NULL)
 	{
 		head = temp;
-		tail = temp;
 	}
 	else
 	{
@@ -70,19 +68,22 @@ void linklist::addInTheEnd(int info)
 	Node *temp = new Node;
 	temp->data = info;
 	temp->next = NULL;
+	Node *q;
+	q = head;
 	if(head == NULL)
 	{
 		head = temp;
-		tail = temp;
 	}
 	else
 	{
-		tail->next = temp;
-		tail = temp;
+		while(q->next != NULL)
+		{
+			q = q->next;
+		}
+		q->next = temp;
 	}
 	
 }
-
 
 
 void linklist::addMultiple(int info, int val)
@@ -91,7 +92,7 @@ void linklist::addMultiple(int info, int val)
 	{
 		cout<<"linklist is empty"<<endl;
 	}
-	else if(head == tail)
+	else if(head->next == NULL)
 	{
 		if(head->data == info)
 		{
@@ -99,7 +100,6 @@ void linklist::addMultiple(int info, int val)
 			temp->next = NULL;
 			temp->data = val;
 			head ->next = temp;
-			tail = temp;
 		}
 		else
 		{
@@ -112,15 +112,7 @@ void linklist::addMultiple(int info, int val)
 		q = head;	
 		while(q != NULL)
 		{
-			if(q->next == tail->next && q->data == info)
-			{
-				Node *temp = new Node;
-				temp->data = val;
-				temp->next = NULL;
-				tail->next = temp;
-				tail = temp;
-			}
-			else if(q->data == info)
+			if(q->data == info)
 			{
 				Node *temp = new Node;
 				temp->data = val;
@@ -132,13 +124,15 @@ void linklist::addMultiple(int info, int val)
 	}
 }
 
+
+
 void linklist::addFirst(int info, int val)
 {
 	if(head==NULL)
 	{
 		cout<<"linklist is empty"<<endl;
 	}
-	else if(head == tail)
+	else if(head->next == NULL)
 	{
 		if(head->data == info)
 		{
@@ -146,7 +140,6 @@ void linklist::addFirst(int info, int val)
 			temp->next = NULL;
 			temp->data = val;
 			head ->next = temp;
-			tail = temp;
 		}
 		else
 		{
@@ -159,16 +152,7 @@ void linklist::addFirst(int info, int val)
 		q = head;	
 		while(q != NULL)
 		{
-			if(q->next == tail->next && q->data == info)
-			{
-				Node *temp = new Node;
-				temp->data = val;
-				temp->next = NULL;
-				tail->next = temp;
-				tail = temp;
-				return;
-			}
-			else if(q->data == info)
+			if(q->data == info)
 			{
 				Node *temp = new Node;
 				temp->data = val;
@@ -204,82 +188,17 @@ void linklist::display()
 	}
 }
 
-void linklist::delMultiple(int info)
-{
-	if(head==NULL)
-	{
-		cout<<"linklist is empty"<<endl;
-	}
-	else if(head == tail)
-	{
-		if(head->data == info)
-		{
-			delete head;
-			head = NULL;
-			tail = NULL;
-		}
-		else
-		{
-			cout<<info<<endl;
-			cout<<"There is no Node with this data"<<endl;
-		}
-	}
-	else
-	{
-		Node *q;
-		Node *p;
-		q = head;
-		p = q;		
-		if(head->data == info)
-		{
-			head = head->next;
-			delete q;
-			q = head;
-		}
-		while(q != NULL)
-		{
-			if(q->data == tail->data && q->data == info)
-			{
-				tail = p;
-				tail->next = NULL;
-				delete q;
-			}
-			else if(q->data == info)
-			{
-				p->next = q->next;
-				delete q;
-				q = p;
-			}
-			else
-			{
-				p = q;
-				q = q->next;
-			}
-		}
-	
-	}
-}
 
-
+// Delete First occurence
 void linklist::delFirst(int info)
 {
 	if(head==NULL)
 	{
 		cout<<"linklist is empty"<<endl;
 	}
-	else if(head == tail)
+	else if(head->data == info && head->next == NULL)
 	{
-		if(head->data == info)
-		{
-			delete head;
-			head = NULL;
-			tail = NULL;
-		}
-		else
-		{
-			cout<<info<<endl;
-			cout<<"There is no Node with this data"<<endl;
-		}
+		head = NULL;
 	}
 	else
 	{
@@ -291,21 +210,73 @@ void linklist::delFirst(int info)
 		{
 			head = head->next;
 			delete q;
-			return;
 		}
+		else
+		{
+			while(q != NULL)
+			{
+				if(q->data == info && q->next == NULL)
+				{
+					p->next = NULL;
+					delete q;
+					return;
+				}
+				else if(q->data == info)
+				{
+					p->next = q->next;
+					delete q;
+					return;
+				}
+				else
+				{
+					p = q;
+					q = q->next;
+				}
+			}
+		}
+	}
+}
+
+
+
+
+void linklist::delMultiple(int info)
+{
+	if(head==NULL)
+	{
+		cout<<"linklist is empty"<<endl;
+	}
+	else if(head->data == info && head->next == NULL)
+	{
+		head = NULL;
+	}
+	else
+	{
+		Node *q;
+		Node *p;
+		q = head;
+		p = q;		
+	
 		while(q != NULL)
 		{
-			if(q->data == tail->data && q->data == info)
+			if (q->data == info && q == head)
 			{
-				tail = p;
-				tail->next = NULL;
+				head = head -> next;
 				delete q;
+				q = head;
+			}
+
+			else if(q->data == info && q->next == NULL)
+			{
+				p->next = NULL;
+				delete q;
+				q = p->next;
 			}
 			else if(q->data == info)
 			{
 				p->next = q->next;
 				delete q;
-				return;
+				q = p->next;
 			}
 			else
 			{
@@ -313,79 +284,72 @@ void linklist::delFirst(int info)
 				q = q->next;
 			}
 		}
-	
 	}
 }
 
 
-void linklist::searchMultiple(int info)
+
+
+void linklist::SearchFirst(int info)
 {
 	if(head==NULL)
 	{
 		cout<<"linklist is empty"<<endl;
 	}
-	else if(head == tail)
+	else if(head->data == info && head->next == NULL)
 	{
-		if(head->data == info)
-		{
-			cout<<info<<" is in linklist"<<endl;
-		}
-		else
-		{
-			cout<<info<<endl;
-			cout<<"There is no Node with this data"<<endl;
-		}
+		cout<<info<<" is in linklist"<<endl;
 	}
 	else
 	{
 		Node *q;
-		q = head;
+		q = head;		
 		while(q != NULL)
-		{	
-			if(q->data == info)
-			{
-				cout<<info<<" is in linklist"<<endl;	
-			}
-			q = q->next;
-		}
-	
-	}
-}
-
-void linklist::searchFirst(int info)
-{
-	if(head==NULL)
-	{
-		cout<<"linklist is empty"<<endl;
-	}
-	else if(head == tail)
-	{
-		if(head->data == info)
 		{
-			cout<<info<<" is in linklist"<<endl;
-		}
-		else
-		{
-			cout<<info<<endl;
-			cout<<"There is no Node with this data"<<endl;
-		}
-	}
-	else
-	{
-		Node *q;
-		q = head;
-		while(q != NULL)
-		{	
+			
 			if(q->data == info)
 			{
 				cout<<info<<" is in linklist"<<endl;
-				return;	
+				delete q;
+				return;
 			}
-			q = q->next;
+			q = q->next
 		}
-	
 	}
 }
+
+
+void linklist::SearchFirst(int info)
+{
+	if(head==NULL)
+	{
+		cout<<"linklist is empty"<<endl;
+	}
+	else if(head->data == info && head->next == NULL)
+	{
+		cout<<info<<" is in linklist"<<endl;
+	}
+	else
+	{
+		int count = 0;
+		Node *q;
+		q = head;		
+		while(q != NULL)
+		{
+			if(q->data == info)
+			{
+				cout<<info<<" is in linklist"<<endl;
+				count += 1;
+			}
+			q = q->next
+		}
+		if (count == 0)
+		{
+			cout<<info<<" is not in linklist"<<endl;
+		}
+	}
+}
+
 
 
 
@@ -393,19 +357,17 @@ int main()
 {
 
 	linklist l;
-	l.addInTheEnd(25);
-	l.addInTheEnd(40);
-	l.addInTheEnd(23);
+	l.addInTheEnd(41);
+	l.addInTheEnd(41);
+	l.addInTheEnd(41);
 	// l.addInTheEnd(422);
 	l.display();
-	// l.del(40);
+	l.delMultiple(41);
+
+	l.addInTheStart(12);
 	l.addInTheStart(23);
-	// l.addInTheStart(23);
-	l.addMultiple(23,55);
-	// l.addInTheEnd(24);
-	// l.delFirst(23);
-	// l.searchMultiple(23);
-	// l.searchFirst(23);
+	l.addInTheEnd(24);
+	// // l.del(25);
 	// l.del(24);
 	l.display();
 	return 0;
