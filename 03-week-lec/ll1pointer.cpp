@@ -33,15 +33,17 @@ linklist::linklist()
 
 linklist::~linklist()
 {
-	Node *p;
-	Node *q;
-	q = head;
-	while(q != NULL)
+	Node *pre;
+	Node *query;
+	query = head;
+	while(query != NULL)
 	{
-		p = q;
-		q = q->next;
-		delete p;
+		pre = query;
+		query = query->next;
+		delete pre;
 	}
+	delete query;
+	delete head;
 }
 
 
@@ -68,19 +70,19 @@ void linklist::addInTheEnd(int info)
 	Node *temp = new Node;
 	temp->data = info;
 	temp->next = NULL;
-	Node *q;
-	q = head;
+	Node *query;
+	query = head;
 	if(head == NULL)
 	{
 		head = temp;
 	}
 	else
 	{
-		while(q->next != NULL)
+		while(query->next != NULL)
 		{
-			q = q->next;
+			query = query->next;
 		}
-		q->next = temp;
+		query->next = temp;
 	}
 	
 }
@@ -108,18 +110,18 @@ void linklist::addMultiple(int info, int val)
 	}
 	else
 	{
-		Node *q;
-		q = head;	
-		while(q != NULL)
+		Node *query;
+		query = head;	
+		while(query != NULL)
 		{
-			if(q->data == info)
+			if(query->data == info)
 			{
 				Node *temp = new Node;
 				temp->data = val;
-				temp->next = q->next;
-				q->next = temp;
+				temp->next = query->next;
+				query->next = temp;
 			}	
-			q = q->next;
+			query = query->next;
 		}
 	}
 }
@@ -148,19 +150,19 @@ void linklist::addFirst(int info, int val)
 	}
 	else
 	{
-		Node *q;
-		q = head;	
-		while(q != NULL)
+		Node *query;
+		query = head;	
+		while(query != NULL)
 		{
-			if(q->data == info)
+			if(query->data == info)
 			{
 				Node *temp = new Node;
 				temp->data = val;
-				temp->next = q->next;
-				q->next = temp;
+				temp->next = query->next;
+				query->next = temp;
 				return;
 			}	
-			q = q->next;
+			query = query->next;
 		}
 	}
 }
@@ -202,35 +204,35 @@ void linklist::delFirst(int info)
 	}
 	else
 	{
-		Node *q;
-		Node *p;
-		q = head;
-		p = q;		
+		Node *query;
+		Node *pre;
+		query = head;
+		pre = query;		
 		if(head->data == info)
 		{
 			head = head->next;
-			delete q;
+			delete query;
 		}
 		else
 		{
-			while(q != NULL)
+			while(query != NULL)
 			{
-				if(q->data == info && q->next == NULL)
+				if(query->data == info && query->next == NULL)
 				{
-					p->next = NULL;
-					delete q;
+					pre->next = NULL;
+					delete query;
 					return;
 				}
-				else if(q->data == info)
+				else if(query->data == info)
 				{
-					p->next = q->next;
-					delete q;
+					pre->next = query->next;
+					delete query;
 					return;
 				}
 				else
 				{
-					p = q;
-					q = q->next;
+					pre = query;
+					query = query->next;
 				}
 			}
 		}
@@ -252,36 +254,36 @@ void linklist::delMultiple(int info)
 	}
 	else
 	{
-		Node *q;
-		Node *p;
-		q = head;
-		p = q;		
+		Node *query;
+		Node *pre;
+		query = head;
+		pre = query;		
 	
-		while(q != NULL)
+		while(query != NULL)
 		{
-			if (q->data == info && q == head)
+			if (query->data == info && query == head)
 			{
 				head = head -> next;
-				delete q;
-				q = head;
+				delete query;
+				query = head;
 			}
 
-			else if(q->data == info && q->next == NULL)
+			else if(query->data == info && query->next == NULL)
 			{
-				p->next = NULL;
-				delete q;
-				q = p->next;
+				pre->next = NULL;
+				delete query;
+				query = pre->next;
 			}
-			else if(q->data == info)
+			else if(query->data == info)
 			{
-				p->next = q->next;
-				delete q;
-				q = p->next;
+				pre->next = query->next;
+				delete query;
+				query = pre->next;
 			}
 			else
 			{
-				p = q;
-				q = q->next;
+				pre = query;
+				query = query->next;
 			}
 		}
 	}
@@ -302,18 +304,18 @@ void linklist::SearchFirst(int info)
 	}
 	else
 	{
-		Node *q;
-		q = head;		
-		while(q != NULL)
+		Node *query;
+		query = head;		
+		while(query != NULL)
 		{
 			
-			if(q->data == info)
+			if(query->data == info)
 			{
 				cout<<info<<" is in linklist"<<endl;
-				delete q;
+				delete query;
 				return;
 			}
-			q = q->next
+			query = query->next
 		}
 	}
 }
@@ -332,16 +334,16 @@ void linklist::SearchFirst(int info)
 	else
 	{
 		int count = 0;
-		Node *q;
-		q = head;		
-		while(q != NULL)
+		Node *query;
+		query = head;		
+		while(query != NULL)
 		{
-			if(q->data == info)
+			if(query->data == info)
 			{
 				cout<<info<<" is in linklist"<<endl;
 				count += 1;
 			}
-			q = q->next
+			query = query->next
 		}
 		if (count == 0)
 		{

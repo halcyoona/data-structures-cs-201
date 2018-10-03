@@ -35,15 +35,17 @@ linklist::linklist()
 
 linklist::~linklist()
 {
-	Node *p;
-	Node *q;
-	q = head;
-	while(q != NULL)
+	Node *pre;
+	Node *query;
+	query = head;
+	while(query != NULL)
 	{
-		p = q;
-		q = q->next;
-		delete p;
+		pre = query;
+		query = query->next;
+		delete pre;
 	}
+	delete query;
+	delete head;
 }
 
 void linklist::addInTheStart(int info)
@@ -108,11 +110,11 @@ void linklist::addMultiple(int info, int val)
 	}
 	else
 	{
-		Node *q;
-		q = head;	
-		while(q != NULL)
+		Node *query;
+		query = head;	
+		while(query != NULL)
 		{
-			if(q->next == tail->next && q->data == info)
+			if(query->next == tail->next && query->data == info)
 			{
 				Node *temp = new Node;
 				temp->data = val;
@@ -120,14 +122,14 @@ void linklist::addMultiple(int info, int val)
 				tail->next = temp;
 				tail = temp;
 			}
-			else if(q->data == info)
+			else if(query->data == info)
 			{
 				Node *temp = new Node;
 				temp->data = val;
-				temp->next = q->next;
-				q->next = temp;
+				temp->next = query->next;
+				query->next = temp;
 			}	
-			q = q->next;
+			query = query->next;
 		}
 	}
 }
@@ -155,11 +157,11 @@ void linklist::addFirst(int info, int val)
 	}
 	else
 	{
-		Node *q;
-		q = head;	
-		while(q != NULL)
+		Node *query;
+		query = head;	
+		while(query != NULL)
 		{
-			if(q->next == tail->next && q->data == info)
+			if(query->next == tail->next && query->data == info)
 			{
 				Node *temp = new Node;
 				temp->data = val;
@@ -168,15 +170,15 @@ void linklist::addFirst(int info, int val)
 				tail = temp;
 				return;
 			}
-			else if(q->data == info)
+			else if(query->data == info)
 			{
 				Node *temp = new Node;
 				temp->data = val;
-				temp->next = q->next;
-				q->next = temp;
+				temp->next = query->next;
+				query->next = temp;
 				return;
 			}	
-			q = q->next;
+			query = query->next;
 		}
 	}
 }
@@ -226,34 +228,34 @@ void linklist::delMultiple(int info)
 	}
 	else
 	{
-		Node *q;
-		Node *p;
-		q = head;
-		p = q;		
+		Node *query;
+		Node *pre;
+		query = head;
+		pre = query;		
 		if(head->data == info)
 		{
 			head = head->next;
-			delete q;
-			q = head;
+			delete query;
+			query = head;
 		}
-		while(q != NULL)
+		while(query != NULL)
 		{
-			if(q->data == tail->data && q->data == info)
+			if(query->data == tail->data && query->data == info)
 			{
-				tail = p;
+				tail = pre;
 				tail->next = NULL;
-				delete q;
+				delete query;
 			}
-			else if(q->data == info)
+			else if(query->data == info)
 			{
-				p->next = q->next;
-				delete q;
-				q = p;
+				pre->next = query->next;
+				delete query;
+				query = pre;
 			}
 			else
 			{
-				p = q;
-				q = q->next;
+				pre = query;
+				query = query->next;
 			}
 		}
 	
@@ -283,34 +285,34 @@ void linklist::delFirst(int info)
 	}
 	else
 	{
-		Node *q;
-		Node *p;
-		q = head;
-		p = q;		
+		Node *query;
+		Node *pre;
+		query = head;
+		pre = query;		
 		if(head->data == info)
 		{
 			head = head->next;
-			delete q;
+			delete query;
 			return;
 		}
-		while(q != NULL)
+		while(query != NULL)
 		{
-			if(q->data == tail->data && q->data == info)
+			if(query->data == tail->data && query->data == info)
 			{
-				tail = p;
+				tail = pre;
 				tail->next = NULL;
-				delete q;
+				delete query;
 			}
-			else if(q->data == info)
+			else if(query->data == info)
 			{
-				p->next = q->next;
-				delete q;
+				pre->next = query->next;
+				delete query;
 				return;
 			}
 			else
 			{
-				p = q;
-				q = q->next;
+				pre = query;
+				query = query->next;
 			}
 		}
 	
@@ -338,15 +340,15 @@ void linklist::searchMultiple(int info)
 	}
 	else
 	{
-		Node *q;
-		q = head;
-		while(q != NULL)
+		Node *query;
+		query = head;
+		while(query != NULL)
 		{	
-			if(q->data == info)
+			if(query->data == info)
 			{
 				cout<<info<<" is in linklist"<<endl;	
 			}
-			q = q->next;
+			query = query->next;
 		}
 	
 	}
@@ -372,16 +374,16 @@ void linklist::searchFirst(int info)
 	}
 	else
 	{
-		Node *q;
-		q = head;
-		while(q != NULL)
+		Node *query;
+		query = head;
+		while(query != NULL)
 		{	
-			if(q->data == info)
+			if(query->data == info)
 			{
 				cout<<info<<" is in linklist"<<endl;
 				return;	
 			}
-			q = q->next;
+			query = query->next;
 		}
 	
 	}
