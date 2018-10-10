@@ -57,6 +57,7 @@ void stack::push(int info)
 	temp->data = info;
 	top = temp;
 	size--;
+	delete temp;
 }
 
 
