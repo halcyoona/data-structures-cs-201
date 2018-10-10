@@ -57,19 +57,19 @@ void stack::push(int info)
 	temp->data = info;
 	top = temp;
 	size--;
-	delete temp;
 }
 
 
 
 void stack::pop()
 {
-	Node *temp = top;
+	
 	if (top == NULL)
 	{
 		cout<<"underflow"<<endl;
 		return;
 	}
+	Node *temp = top;
 	top = top->next;
 	size++;
 	delete temp;
@@ -102,15 +102,16 @@ int main()
 	obj.pop();
 	obj.push(7);
 	obj.push(9);
-	cout<<" "<<endl;
+
+	// cout<<" "<<endl;
+	obj.pop();
+	obj.pop();
+	obj.pop();
+	obj.pop();
+	obj.push(55);
+	obj.push(11);
 	// obj.pop();
-	// obj.pop();
-	// obj.pop();
-	// obj.pop();
-	// obj.push(6);
-	// obj.push(7);
-	// obj.pop();
-	// obj.pop();
+	obj.pop();
 	// obj.push(7);
 	obj.display();
 	return 0;

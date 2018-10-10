@@ -2,7 +2,6 @@
 using namespace std;
 
 
-
 class stack
 {
 	private:
@@ -70,6 +69,7 @@ void stack::display()
 		cout<<*(top+tempCount);
 		tempCount++;
 	}
+	cout<<endl;
 }
 
 int main()
@@ -85,10 +85,11 @@ int main()
 	obj.display();
 	obj.pop();
 	obj.pop();
-	obj.pop();
-	obj.pop();
-	obj.pop();
-	obj.pop();
+	// obj.pop();
+	obj.push(23);
+	// obj.pop();
+	// obj.pop();
+	// obj.pop();
 	obj.display();
 	return 0;
 }
