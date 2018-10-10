@@ -22,13 +22,12 @@ class stack
 stack::stack(int s)
 { 
 	size = s;
-
 	lst = new int [size];
 	for (int i = 0; i < size; i++)
 	{
 		*(lst+i) = 0;
 	}
-	top = lst;
+	top = NULL;
 }
 
 
@@ -36,51 +35,70 @@ stack::stack(int s)
 stack::~stack()
 {
 	// delete top;
-	delete [] top;
+	delete [] lst;
 }
+
+
 
 
 
 void stack::push(int info)
 {
-	if (size == 0)
+	if (top == lst+(size-1))
 	{
 		cout<<"overflow"<<endl;
 		return;
 	}
-	*top = info;
+	if (top == NULL)
+	{
+		top = lst;
+		*top = info;
+		return;
+	}
 	top++;
-	size--;
+	*top = info;
 	return;
 	
 }
 
+
+
 void stack::pop()
 {
-	if (top == lst)
+	if (top == NULL)
 	{
 		cout<<"underflow"<<endl;
 		return;
 	}
-	size++;
+	if (top == lst)
+	{
+		top == NULL;
+		return;
+	}
 	top--;
+	return;
 }
+
+
+
 
 void stack::display()
 {
-	int *temp = lst;
-	if (lst == top)
+	int temp = 0;
+	if (lst == NULL)
 	{
 		cout<<"stack is empty"<<endl;
 		return;
 	}
-	while(temp != top)
+	while(temp+lst <= top)
 	{
-		cout<<*temp<<" ";
+		cout<<*(lst+temp)<<" ";
 		temp++;
 	}
 	cout<<endl;
 }
+
+
 
 int main()
 {
@@ -91,16 +109,17 @@ int main()
 	// obj.push(4);
 	// obj.push(5);
 	obj.push(6);
-	obj.push(7);
+	// obj.push(7);
 	obj.display();
 	obj.pop();
+	obj.pop();
 	// obj.pop();
-	obj.pop();
-	// obj.push(5);
-	obj.pop();
+	obj.push(5);
+	// obj.pop();
+	obj.display();
 	// obj.push(4);
 	// obj.pop();
-	obj.pop();
-	obj.display();
+	// obj.pop();
+	// obj.display();
 	return 0;
 }
