@@ -22,7 +22,7 @@ class bst
 		void in_ord(Node *temp);
 		void insert(Node *temp);
 		void del(Node *temp);
-	
+		void delAll(Node *temp);
 };
 
 
@@ -33,36 +33,16 @@ bst::bst()
 
 bst::~bst()
 {
-	if (root == NULL)
-	{
-		return;
-	}
-	if (temp->left->right != NULL)
-	{
-		in_ord(temp->right);
-	}
+	delAll(root);
+}
 
-	if (temp->right->left != NULL)
-	{
-		in_ord(temp->right);
-	}
-	if (temp->left->left == NULL && temp->left->right)
-	{
-		delete temp->left;
-		temp->left = NULL;
-	}
-	
-	if (temp->right->left == NULL && temp->right->right)
-	{
-		delete temp->right;
-		temp->right = NULL;
-	}
-	if (temp == root)
-	{
-		delete temp;
-		temp = root = NULL;
-	}
-	
+void bst::delAll(Node *temp)
+{
+	if (temp->left != NULL)
+		delAll(temp->left);
+	if (temp->right != NULL)
+		delAll(temp->right);
+	delete temp;
 }
 
 
