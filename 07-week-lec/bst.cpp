@@ -126,10 +126,78 @@ void bst::del(Node *temp)
 		cout<<"Tree is empty"<<endl;
 		return;
 	}
+	if (temp->data == number)
+			{
+				if (temp->left == NULL && temp->right == NULL)
+				{
+					delete temp;
+					root = temp = NULL;
+					return;
+				}
+
+				if (temp->left != NULL && temp->right == NULL)
+				{
+					root = temp->left;
+					Node *temp2 = temp;
+					delete temp2;
+					temp = root;
+					return;
+				}
+				if (temp->left == NULL && temp->right != NULL)
+				{
+					root = temp->right;
+					Node *temp2 = temp;
+					delete temp2;
+					temp = root;
+					return;
+				}
+				if (temp->left != NULL && temp->right != NULL)
+				{
+					Node *temp2 = temp;
+					if (temp->left->left->right != NULL)
+					{
+						Node *temp3 = temp;
+						temp3 = temp3->left->left;
+						temp2 = temp2->left->left->right;
+						while(temp2->right != NULL)
+						{
+							temp3 = temp2;
+							temp2 = temp2->right;
+						}
+						if (temp2->left == NULL)
+						{
+							temp->data = temp2->data;
+							delete temp2;
+							temp3->right = NULL;
+							return;
+						}
+						if (temp2->left != NULL)
+						{
+							temp3->right = temp2->left;
+							temp->data = temp2->data;
+							delete temp2;
+							;temp3->right = NULL;
+							return; 
+						}
+						
+					}
+					else
+					{
+						temp2 = temp->left;
+						temp->left = temp2->left;
+						temp->left->right = temp2->right;
+						delete temp2;
+						temp2 = NULL;
+						return;
+					}
+
+				}
+
+			}
 	if (number < temp->data)
 	{
 		if (temp->left != NULL)
-		{	cout<<"l"<<endl;
+		{	
 			if (temp->left->data == number)
 			{
 				if (temp->left->left == NULL && temp->left->right == NULL)
@@ -206,7 +274,6 @@ void bst::del(Node *temp)
 	{
 		if (temp->right != NULL)
 		{	
-			cout<<"r"<<endl;
 			if (temp->right->data == number)
 			{
 				if (temp->right->left == NULL && temp->right->right == NULL)
@@ -318,6 +385,14 @@ int main()
 	obj.number = 70;
 	obj.del(obj.root);
 	cout<<endl;
+	obj.in_ord(obj.root);
+	cout<<endl;
+	obj.number = 64;
+	obj.del(obj.root);
+	obj.in_ord(obj.root);
+	cout<<endl;
+	obj.number = 70;
+	obj.insert(obj.root);
 	obj.in_ord(obj.root);
 	cout<<endl;
 	return 0;
