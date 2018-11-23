@@ -24,9 +24,19 @@ class avl
 		~avl();
 		void updateHeight(Node *temp);
 		void updateBalanceFactor(Node *temp);
+		void insertCaseOneLeft(Node *temp);
+		void insertCaseTwoLeft(Node *temp);
+		void insertCaseThreeLeft(Node *temp);
+		void insertCaseFourLeft(Node *temp);
+		void insertCaseOneRight(Node *temp);
+		void insertCaseTwoRight(Node *temp);
+		void insertCaseThreeRight(Node *temp);
+		void insertCaseFourRight(Node *temp);
+		void in_ord_info(Node *temp);
 		void in_ord(Node *temp);
+		void post_ord(Node *temp);
+		void pre_ord(Node *temp);
 		void insert(Node *temp);
-		void del(Node *temp);
 		void delAll(Node *temp);
 };
 
@@ -70,6 +80,158 @@ void avl:: in_ord(Node *temp)
 }
 
 
+void avl:: in_ord_info(Node *temp)
+{
+	if (temp == NULL)
+	{
+		cout<<"Tree is empty"<<endl;
+		return;
+	}
+	if (temp->left != NULL)
+	{
+		in_ord_info(temp->left);
+	}
+	cout<<"Info : "<<temp->data<<"  balanceFactor : "<<temp->balanceFactor<<" "<<"  leftHeight : "<<temp->leftHeight<<"  rightHeight : "<<temp->rightHeight<<endl;
+	if (temp->right != NULL)
+	{
+		in_ord_info(temp->right);
+	}
+}
+
+
+void avl:: post_ord(Node *temp)
+{
+	if (temp == NULL)
+	{
+		cout<<"Tree is empty"<<endl;
+		return;
+	}
+	if (temp->left != NULL)
+	{
+		in_ord(temp->left);
+	}
+	if (temp->right != NULL)
+	{
+		in_ord(temp->right);
+	}
+	cout<<temp->data<<" ";
+}
+
+
+
+void avl:: pre_ord(Node *temp)
+{
+	if (temp == NULL)
+	{
+		cout<<"Tree is empty"<<endl;
+		return;
+	}
+	
+	cout<<temp->data<<" ";
+	if (temp->left != NULL)
+	{
+		in_ord(temp->left);
+	}
+	if (temp->right != NULL)
+	{
+		in_ord(temp->right);
+	}
+	
+}
+
+
+
+
+
+
+void avl::updateBalanceFactor(Node *temp)
+{
+	temp->balanceFactor = temp->leftHeight - temp->rightHeight;
+}
+
+
+void avl::insertCaseOneLeft(Node *temp)
+{
+	// case -2 -1
+	Node *temp2 = temp->left;
+	temp->left = temp->left->right;
+	temp2->right = temp->left->left;			
+	temp->left = temp2;
+}
+
+void avl::insertCaseTwoLeft(Node *temp)
+{
+	// case 2 1
+	Node *temp2 = temp->left;
+	temp->left = temp2->left;
+	temp2->left = temp->left->right;
+	temp->left->right = temp2;
+}
+
+
+void avl::insertCaseThreeLeft(Node *temp)
+{
+	// case 2 -1
+	Node *temp2 = temp->left->left;
+	temp->left->left = temp2->right;
+	temp2->right = temp->left->left->left;
+	temp->left->left->left = temp2;
+	insertCaseTwoLeft(temp);
+}
+
+void avl::insertCaseFourLeft(Node *temp)
+{
+	// case -2 1
+	Node *temp2 = temp->left->right;
+	temp->left->right = temp2->left;
+	temp2->left = temp2->left->right->right;
+	temp->left->right->right = temp2;
+	insertCaseOneLeft(temp);	
+}
+
+
+void avl::insertCaseOneRight(Node *temp)
+{
+	// case -2 -1
+	Node *temp2 = temp->right;
+	temp->right = temp2->right;
+	temp2->right = temp->right->left;
+	temp2->right->left = temp2; 
+}
+
+void avl::insertCaseTwoRight(Node *temp)
+{
+	// case 2 1
+	Node *temp2 = temp->right;
+	temp->right = temp2->left;
+	temp2->left = temp->right->right;
+	temp->right->right = temp2;
+}
+
+
+void avl::insertCaseThreeRight(Node *temp)
+{
+	// case 2 -1
+
+	Node *temp2 = temp->right->left;
+	temp->right->left = temp2->right;
+	temp2->right = temp->right->left->left;
+	temp->right->left->left = temp2;
+	insertCaseTwoRight(temp);
+}
+
+
+void avl:: insertCaseFourRight(Node *temp)
+{
+	// case -2 1
+	Node *temp2 = temp->right->left;
+	temp->right->left = temp2->right;
+	temp2->right = temp->right->left->left;
+	temp->right->left->left = temp2;
+	insertCaseOneRight(temp);
+}
+
+
 
 void avl:: updateHeight(Node *temp)
 {
@@ -94,15 +256,15 @@ void avl:: updateHeight(Node *temp)
 	}
 	if (temp->right != NULL)
 	{
-		if (temp->right->leftHeight > temp->left->rightHeight)
+		if (temp->right->leftHeight > temp->right->rightHeight)
 		{
 			temp->rightHeight = 1;
-			temp->rightHeight += temp->left->leftHeight;
+			temp->rightHeight += temp->right->leftHeight;
 		}
 		else
 		{
 			temp->rightHeight = 1;
-			temp->tightHeight += temp->left->rightHeight;	
+			temp->rightHeight += temp->right->rightHeight;	
 		}
 	}
 	if (temp->left == NULL)
@@ -115,10 +277,6 @@ void avl:: updateHeight(Node *temp)
 	}
 }
 
-void avl::updateBalanceFactor(Node *temp)
-{
-	temp->balanceFactor = temp->leftHeight - temp->rightHeight;
-}
 
 
 void avl::insert(Node *temp)
@@ -131,6 +289,8 @@ void avl::insert(Node *temp)
 		temp->right = NULL;
 		temp->left = NULL;
 		root = temp;
+		updateHeight(temp);
+		updateBalanceFactor(temp);
 		return;
 	}
 	if (temp->data == number)
@@ -138,6 +298,7 @@ void avl::insert(Node *temp)
 		cout<<"given number already in  tree"<<endl;
 		return;
 	}
+
 	if (temp->data > number)
 	{
 		if (temp->left != NULL)
@@ -147,19 +308,49 @@ void avl::insert(Node *temp)
 			updateBalanceFactor(temp);
 			if (temp->left->balanceFactor == -2)
 			{
+				
 				if (temp->left->right->balanceFactor == -1)
 				{
-					
+					cout<<"case -2-1"<<endl;
+					insertCaseOneLeft(temp);
+					updateHeight(temp->left);
+					updateBalanceFactor(temp->left);
+					return;
+				}
+
+				if (temp->left->right->balanceFactor == 1)
+				{
+					cout<<"case -21"<<endl;
+					insertCaseFourLeft(temp);
+					updateHeight(temp->left);
+					updateBalanceFactor(temp->left);
+					return;
 				}
 			}
 
-			if (temp->right->balanceFactor == -2)
+			if (temp->left->balanceFactor == 2)
 			{
-				if (temp->left->right->balanceFactor == -1)
+				
+				if (temp->left->left->balanceFactor == -1)
 				{
-					
+					cout<<"case 2-1"<<endl;
+					insertCaseThreeLeft(temp);
+					updateHeight(temp->left);
+					updateBalanceFactor(temp->left);
+					return;
+				}
+
+				if (temp->left->left->balanceFactor == 1)
+				{	
+					cout<<"case 21"<<endl;
+					insertCaseTwoLeft(temp);
+					updateHeight(temp->left);
+					updateBalanceFactor(temp->left);
+					return;
 				}
 			}
+			return;
+			
 		}
 		else
 		{
@@ -169,6 +360,9 @@ void avl::insert(Node *temp)
 			temp2->left = NULL;
 			temp->left = temp2;
 			updateHeight(temp2);
+			updateBalanceFactor(temp2);
+			updateHeight(temp);
+			updateBalanceFactor(temp);
 			return;
 		}
 	}
@@ -179,6 +373,39 @@ void avl::insert(Node *temp)
 			insert(temp->right);
 			updateHeight(temp);
 			updateBalanceFactor(temp);
+			if (temp->right->balanceFactor == -2)
+			{
+				cout<<"case 12"<<endl;
+				if (temp->right->right->balanceFactor == -1)
+				{
+					insertCaseOneRight(temp);
+
+					return;
+				}
+
+				if (temp->right->right->balanceFactor == 1)
+				{
+					insertCaseFourRight(temp);
+					return;
+				}
+			}
+
+			if (temp->right->balanceFactor == 2)
+			{
+				cout<<"case 21"<<endl;
+				if (temp->right->left->balanceFactor == -1)
+				{
+					insertCaseThreeRight(temp);
+					return;
+				}
+
+				if (temp->right->left->balanceFactor == 1)
+				{
+					insertCaseTwoRight(temp);
+					return;
+				}
+			}
+			return;
 		}
 		else
 		{
@@ -188,6 +415,9 @@ void avl::insert(Node *temp)
 			temp2->left = NULL;
 			temp->right = temp2;
 			updateHeight(temp2);
+			updateBalanceFactor(temp2);
+			updateHeight(temp);
+			updateBalanceFactor(temp);
 			return;
 		}
 	}
@@ -196,234 +426,7 @@ void avl::insert(Node *temp)
 
 
 
-void avl::del(Node *temp)
-{
-	if (root == NULL)
-	{
-		cout<<"Tree is empty"<<endl;
-		return;
-	}
-	if (temp->data == number)
-			{
-				if (temp->left == NULL && temp->right == NULL)
-				{
-					delete temp;
-					root = temp = NULL;
-					return;
-				}
 
-				if (temp->left != NULL && temp->right == NULL)
-				{
-					root = temp->left;
-					Node *temp2 = temp;
-					delete temp2;
-					temp = root;
-					return;
-				}
-				if (temp->left == NULL && temp->right != NULL)
-				{
-					root = temp->right;
-					Node *temp2 = temp;
-					delete temp2;
-					temp = root;
-					return;
-				}
-				if (temp->left != NULL && temp->right != NULL)
-				{
-					Node *temp2 = temp;
-					if (temp->left->left->right != NULL)
-					{
-						Node *temp3 = temp;
-						temp3 = temp3->left->left;
-						temp2 = temp2->left->left->right;
-						while(temp2->right != NULL)
-						{
-							temp3 = temp2;
-							temp2 = temp2->right;
-						}
-						if (temp2->left == NULL)
-						{
-							temp->data = temp2->data;
-							delete temp2;
-							temp3->right = NULL;
-							return;
-						}
-						if (temp2->left != NULL)
-						{
-							temp3->right = temp2->left;
-							temp->data = temp2->data;
-							delete temp2;
-							;temp3->right = NULL;
-							return; 
-						}
-						
-					}
-					else
-					{
-						temp2 = temp->left;
-						temp->left = temp2->left;
-						temp->left->right = temp2->right;
-						delete temp2;
-						temp2 = NULL;
-						return;
-					}
-
-				}
-
-			}
-	if (number < temp->data)
-	{
-		if (temp->left != NULL)
-		{	
-			if (temp->left->data == number)
-			{
-				if (temp->left->left == NULL && temp->left->right == NULL)
-				{
-					delete temp->left;
-					temp->left = NULL;
-					return;
-				}
-
-				if (temp->left->left != NULL && temp->left->right == NULL)
-				{
-					Node *temp2 = temp->left;
-					temp->left = temp->left->left;
-					delete temp2;
-					temp2 = NULL;
-					return;
-				}
-				if (temp->left->left == NULL && temp->left->right != NULL)
-				{
-					Node *temp2 = temp->left;
-					temp->left = temp->left->right;
-					delete temp2;
-					temp2 = NULL;
-					return;
-				}
-				if (temp->left->left != NULL && temp->left->right != NULL)
-				{
-					Node *temp2 = temp;
-					if (temp->left->left->right != NULL)
-					{
-						Node *temp3 = temp;
-						temp3 = temp3->left->left;
-						temp2 = temp2->left->left->right;
-						while(temp2->right != NULL)
-						{
-							temp3 = temp2;
-							temp2 = temp2->right;
-						}
-						if (temp2->left == NULL)
-						{
-							temp->left->data = temp2->data;
-							delete temp2;
-							temp3->right = NULL;
-							return;
-						}
-						if (temp->left != NULL)
-						{
-							temp3->right = temp2->left;
-							temp->left->data = temp2->data;
-							delete temp2;
-							temp3->right = NULL;
-							return; 
-						}
-						
-					}
-					else
-					{
-						temp2 = temp->left;
-						temp->left = temp2->left;
-						temp->left->right = temp2->right;
-						delete temp2;
-						temp2 = NULL;
-						return;
-					}
-
-				}
-
-			}
-			del(temp->left);
-			return;
-		}
-	}
-	if (number > temp->data)
-	{
-		if (temp->right != NULL)
-		{	
-			if (temp->right->data == number)
-			{
-				if (temp->right->left == NULL && temp->right->right == NULL)
-				{
-					delete temp->right;
-					temp->right = NULL;
-					return;
-				}
-
-				if (temp->right->left != NULL && temp->right->right == NULL)
-				{
-					Node *temp2 = temp->right;
-					temp->right = temp->right->left;
-					delete temp2;
-					temp2 = NULL;
-					return;
-				}
-				if (temp->right->left == NULL && temp->right->right != NULL)
-				{
-					Node *temp2 = temp->right;
-					temp->right = temp->right->right;
-					delete temp2;
-					temp2 = NULL;
-					return;
-				}
-				if (temp->right->left != NULL && temp->right->right != NULL)
-				{
-					Node *temp2 = temp;
-					if (temp->right->right->left != NULL)
-					{
-						Node *temp3 = temp;
-						temp3 = temp3->right->right;
-						temp2 = temp2->right->right->left;
-						while(temp2->left != NULL)
-						{
-							temp3 = temp2;
-							temp2 = temp2->left;
-						}
-						if (temp2->right == NULL)
-						{
-							temp->right->data = temp2->data;
-							delete temp2;
-							temp3->left = NULL;
-							return;
-						}
-						if (temp->right != NULL)
-						{
-							temp3->left = temp2->right;
-							temp->right->data = temp2->data;
-							delete temp2;
-							temp3->left = NULL;
-							return; 
-						}
-						
-					}
-					else
-					{
-						temp2 = temp->right;
-						temp->right = temp2->right;
-						temp->right->left = temp2->left;
-						delete temp2;
-						temp2 = NULL;
-						return;
-					}
-
-				}
-
-			}
-			del(temp->right);
-			return;
-		}
-	}
-}
 
 
 
@@ -433,5 +436,35 @@ void avl::del(Node *temp)
 
 int main()
 {
+	avl obj;
+	obj.number = 70;
+	obj.insert(obj.root);
+	obj.number = 15;
+	obj.insert(obj.root);
+	obj.number = 82;
+	obj.insert(obj.root);
+	obj.number = 9;
+	obj.insert(obj.root);
+	obj.number = 45;
+	obj.insert(obj.root);
+	obj.number = 7;
+	obj.insert(obj.root);
+	obj.number = 3;
+	obj.insert(obj.root);
+	// obj.number = 77;
+	// obj.insert(obj.root);
+	// obj.number = 14;
+	// obj.insert(obj.root);
+	// obj.number = 8;
+	// obj.insert(obj.root);
+	// obj.number = 14;
+	// obj.insert(obj.root);
+	obj.in_ord_info(obj.root);
+	obj.in_ord(obj.root);
+	cout<<endl;
+	obj.pre_ord(obj.root);
+	cout<<endl;
+	obj.post_ord(obj.root);
+	cout<<endl;
 	return 0;
 }
