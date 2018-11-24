@@ -22,22 +22,38 @@ class avl
 		int number;
 		avl();
 		~avl();
+		void delAll(Node *temp);
+
 		void updateHeight(Node *temp);
 		void updateBalanceFactor(Node *temp);
+		void fullDownUpdation(Node *temp);
+
+		void solvingBFL(Node *temp);
+		void solvingBFR(Node *temp);
+		void solvingBFRoot(Node *temp);
+
 		void insertCaseOneLeft(Node *temp);
 		void insertCaseTwoLeft(Node *temp);
 		void insertCaseThreeLeft(Node *temp);
 		void insertCaseFourLeft(Node *temp);
+		
 		void insertCaseOneRight(Node *temp);
 		void insertCaseTwoRight(Node *temp);
 		void insertCaseThreeRight(Node *temp);
 		void insertCaseFourRight(Node *temp);
+
+
+		void insertCaseOneRoot(Node *temp);
+		void insertCaseTwoRoot(Node *temp);
+		void insertCaseThreeRoot(Node *temp);
+		void insertCaseFourRoot(Node *temp);
+		
 		void in_ord_info(Node *temp);
 		void in_ord(Node *temp);
 		void post_ord(Node *temp);
 		void pre_ord(Node *temp);
+
 		void insert(Node *temp);
-		void delAll(Node *temp);
 };
 
 
@@ -61,24 +77,9 @@ void avl::delAll(Node *temp)
 }
 
 
-void avl:: in_ord(Node *temp)
-{
-	if (temp == NULL)
-	{
-		cout<<"Tree is empty"<<endl;
-		return;
-	}
-	if (temp->left != NULL)
-	{
-		in_ord(temp->left);
-	}
-	cout<<temp->data<<" ";
-	if (temp->right != NULL)
-	{
-		in_ord(temp->right);
-	}
-}
 
+////////////////////////////////////////////////////////////////////////////
+// traverse
 
 void avl:: in_ord_info(Node *temp)
 {
@@ -99,7 +100,9 @@ void avl:: in_ord_info(Node *temp)
 }
 
 
-void avl:: post_ord(Node *temp)
+
+
+void avl:: in_ord(Node *temp)
 {
 	if (temp == NULL)
 	{
@@ -110,12 +113,35 @@ void avl:: post_ord(Node *temp)
 	{
 		in_ord(temp->left);
 	}
+	cout<<temp->data<<" ";
 	if (temp->right != NULL)
 	{
 		in_ord(temp->right);
 	}
+}
+
+
+
+void avl:: post_ord(Node *temp)
+{
+	if (temp == NULL)
+	{
+		cout<<"Tree is empty"<<endl;
+		return;
+	}
+	if (temp->left != NULL)
+	{
+		post_ord(temp->left);
+	}
+	if (temp->right != NULL)
+	{
+		post_ord(temp->right);
+	}
 	cout<<temp->data<<" ";
 }
+
+
+
 
 
 
@@ -130,24 +156,23 @@ void avl:: pre_ord(Node *temp)
 	cout<<temp->data<<" ";
 	if (temp->left != NULL)
 	{
-		in_ord(temp->left);
+		pre_ord(temp->left);
 	}
 	if (temp->right != NULL)
 	{
-		in_ord(temp->right);
+		pre_ord(temp->right);
 	}
 	
 }
+/////////////////////////////////////////////////////////
 
 
 
 
 
 
-void avl::updateBalanceFactor(Node *temp)
-{
-	temp->balanceFactor = temp->leftHeight - temp->rightHeight;
-}
+///////////////////////////////////////////////////////
+// cases Left
 
 
 void avl::insertCaseOneLeft(Node *temp)
@@ -188,7 +213,15 @@ void avl::insertCaseFourLeft(Node *temp)
 	temp->left->right->right = temp2;
 	insertCaseOneLeft(temp);	
 }
+/////////////////////////////////////////////////////////////////////////////
 
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// case Right
 
 void avl::insertCaseOneRight(Node *temp)
 {
@@ -230,8 +263,224 @@ void avl:: insertCaseFourRight(Node *temp)
 	temp->right->left->left = temp2;
 	insertCaseOneRight(temp);
 }
+///////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+// case root
+
+void avl::insertCaseOneRoot(Node *temp)
+{
+	// case -2 -1
+	root = temp->right;
+	temp->right = root->left;
+	root->left = temp; 
+}
+
+void avl::insertCaseTwoRoot(Node *temp)
+{
+	// case 2 1
+	root = temp->left;
+	temp->left = root->right;
+	root->right = temp;
+}
+
+
+void avl::insertCaseThreeRoot(Node *temp)
+{
+	// case 2 -1
+
+	Node *temp2 = temp->left;
+	temp->left = temp2->right;
+	temp2->right = temp->left->left;
+	temp->left->left = temp2;
+	insertCaseTwoRoot(temp);
+}
+
+
+void avl:: insertCaseFourRoot(Node *temp)
+{
+	// case -2 1
+	Node *temp2 = temp->right;
+	temp->right = temp2->left;
+	temp2->left = temp->right->right;
+	temp->right->right = temp2;
+	insertCaseOneRoot(temp);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Solving balance factor
+void avl::solvingBFL(Node *temp)
+{
+	if (temp->left->balanceFactor == -2)
+	{
+		
+		if (temp->left->right->balanceFactor == -1)
+		{
+			cout<<"case -2-1"<<endl;
+			insertCaseOneLeft(temp);
+			fullDownUpdation(temp->left);
+			return;
+		}
+
+		if (temp->left->right->balanceFactor == 1)
+		{
+			cout<<"case -21"<<endl;
+			insertCaseFourLeft(temp);
+			fullDownUpdation(temp->left);
+			return;
+		}
+	}
+
+	if (temp->left->balanceFactor == 2)
+	{
+		
+		if (temp->left->left->balanceFactor == -1)
+		{
+			cout<<"case 2-1"<<endl;
+			insertCaseThreeLeft(temp);
+			fullDownUpdation(temp->left);
+			return;
+		}
+
+		if (temp->left->left->balanceFactor == 1)
+		{	
+			cout<<"case 21"<<endl;
+			insertCaseTwoLeft(temp);
+			fullDownUpdation(temp->left);
+			return;
+		}
+	}
+}
+
+
+void avl::solvingBFR(Node *temp)
+{
+	if (temp->right->balanceFactor == -2)
+	{
+		
+		if (temp->right->right->balanceFactor == -1)
+		{
+			// cout<<"case -2-1"<<endl;
+			insertCaseOneRight(temp);
+			fullDownUpdation(temp->right);
+			return;
+		}
+
+		if (temp->right->right->balanceFactor == 1)
+		{
+			// cout<<"case -21"<<endl;
+			insertCaseFourRight(temp);
+			fullDownUpdation(temp->right);
+			return;
+		}
+	}
+
+	if (temp->right->balanceFactor == 2)
+	{
+		if (temp->right->left->balanceFactor == -1)
+		{
+			// cout<<"case 2-1"<<endl;
+			insertCaseThreeRight(temp);
+			fullDownUpdation(temp->right);
+			return;
+		}
+
+		if (temp->right->left->balanceFactor == 1)
+		{
+			// cout<<"case 21"<<endl;
+			insertCaseTwoRight(temp);
+			fullDownUpdation(temp->right);
+			return;
+		}
+	}
+}
+
+void avl::solvingBFRoot(Node *temp)
+{
+	if (temp->balanceFactor == -2)
+	{
+		
+		if (temp->right->balanceFactor == -1)
+		{
+			// cout<<"case -2-1"<<endl;
+			insertCaseOneRoot(temp);
+			fullDownUpdation(temp);
+			return;
+		}
+
+		if (temp->right->balanceFactor == 1)
+		{
+			// cout<<"case -21"<<endl;
+			insertCaseFourRoot(temp);
+			fullDownUpdation(temp);
+			return;
+		}
+	}
+
+	if (temp->balanceFactor == 2)
+	{
+		
+		if (temp->left->balanceFactor == -1)
+		{
+			// cout<<"case 2-1"<<endl;
+			insertCaseThreeRoot(temp);
+			fullDownUpdation(temp);
+			return;
+		}
+
+		if (temp->left->balanceFactor == 1)
+		{
+			// cout<<"case 21"<<endl;
+			insertCaseTwoRoot(temp);
+			fullDownUpdation(temp);
+			return;
+		}
+	}	
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Balance factor calculation and height calculation
+
+void avl:: fullDownUpdation(Node *temp)
+{
+	if (temp == NULL)
+	{
+		cout<<"Tree is empty"<<endl;
+		return;
+	}
+	if (temp->left != NULL)
+	{
+		fullDownUpdation(temp->left);
+	}
+	if (temp->right != NULL)
+	{
+		fullDownUpdation(temp->right);
+	}
+	updateHeight(temp);
+	updateBalanceFactor(temp);
+}
+
+
+void avl::updateBalanceFactor(Node *temp)
+{
+	temp->balanceFactor = temp->leftHeight - temp->rightHeight;
+}
 
 void avl:: updateHeight(Node *temp)
 {
@@ -277,7 +526,14 @@ void avl:: updateHeight(Node *temp)
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////////
 
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// insertion code
 
 void avl::insert(Node *temp)
 {
@@ -306,50 +562,8 @@ void avl::insert(Node *temp)
 			insert(temp->left);
 			updateHeight(temp);
 			updateBalanceFactor(temp);
-			if (temp->left->balanceFactor == -2)
-			{
-				
-				if (temp->left->right->balanceFactor == -1)
-				{
-					cout<<"case -2-1"<<endl;
-					insertCaseOneLeft(temp);
-					updateHeight(temp->left);
-					updateBalanceFactor(temp->left);
-					return;
-				}
-
-				if (temp->left->right->balanceFactor == 1)
-				{
-					cout<<"case -21"<<endl;
-					insertCaseFourLeft(temp);
-					updateHeight(temp->left);
-					updateBalanceFactor(temp->left);
-					return;
-				}
-			}
-
-			if (temp->left->balanceFactor == 2)
-			{
-				
-				if (temp->left->left->balanceFactor == -1)
-				{
-					cout<<"case 2-1"<<endl;
-					insertCaseThreeLeft(temp);
-					updateHeight(temp->left);
-					updateBalanceFactor(temp->left);
-					return;
-				}
-
-				if (temp->left->left->balanceFactor == 1)
-				{	
-					cout<<"case 21"<<endl;
-					insertCaseTwoLeft(temp);
-					updateHeight(temp->left);
-					updateBalanceFactor(temp->left);
-					return;
-				}
-			}
-			return;
+			solvingBFL(temp);
+			fullDownUpdation(temp->left);
 			
 		}
 		else
@@ -373,39 +587,9 @@ void avl::insert(Node *temp)
 			insert(temp->right);
 			updateHeight(temp);
 			updateBalanceFactor(temp);
-			if (temp->right->balanceFactor == -2)
-			{
-				cout<<"case 12"<<endl;
-				if (temp->right->right->balanceFactor == -1)
-				{
-					insertCaseOneRight(temp);
-
-					return;
-				}
-
-				if (temp->right->right->balanceFactor == 1)
-				{
-					insertCaseFourRight(temp);
-					return;
-				}
-			}
-
-			if (temp->right->balanceFactor == 2)
-			{
-				cout<<"case 21"<<endl;
-				if (temp->right->left->balanceFactor == -1)
-				{
-					insertCaseThreeRight(temp);
-					return;
-				}
-
-				if (temp->right->left->balanceFactor == 1)
-				{
-					insertCaseTwoRight(temp);
-					return;
-				}
-			}
-			return;
+			solvingBFR(temp);
+			fullDownUpdation(temp->right);
+			
 		}
 		else
 		{
@@ -420,6 +604,11 @@ void avl::insert(Node *temp)
 			updateBalanceFactor(temp);
 			return;
 		}
+	}
+	if (temp == root)
+	{
+		solvingBFRoot(temp);
+		fullDownUpdation(temp);
 	}
 
 }
@@ -451,14 +640,14 @@ int main()
 	obj.insert(obj.root);
 	obj.number = 3;
 	obj.insert(obj.root);
-	// obj.number = 77;
-	// obj.insert(obj.root);
-	// obj.number = 14;
-	// obj.insert(obj.root);
-	// obj.number = 8;
-	// obj.insert(obj.root);
-	// obj.number = 14;
-	// obj.insert(obj.root);
+	obj.number = 77;
+	obj.insert(obj.root);
+	obj.number = 14;
+	obj.insert(obj.root);
+	obj.number = 8;
+	obj.insert(obj.root);
+	obj.number = 14;
+	obj.insert(obj.root);
 	obj.in_ord_info(obj.root);
 	obj.in_ord(obj.root);
 	cout<<endl;
