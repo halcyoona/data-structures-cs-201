@@ -20,11 +20,14 @@ class avl
 	public:
 		Node *root;
 		int number;
+		int flag;
+		int singleRotationFlag;
 		avl();
 		~avl();
 		void delAll(Node *temp);
 
 		void updateHeight(Node *temp);
+		void updatingFlag(Node *temp);
 		void updateBalanceFactor(Node *temp);
 		void fullDownUpdation(Node *temp);
 
@@ -47,6 +50,14 @@ class avl
 		void insertCaseTwoRoot(Node *temp);
 		void insertCaseThreeRoot(Node *temp);
 		void insertCaseFourRoot(Node *temp);
+
+		void simpleDelCaseOne(Node *temp);
+		void simpleDelCaseTwoA(Node *temp);
+		void simpleDelCaseTwoB(Node *temp);
+		void simpleDelCaseThree(Node *temp);
+
+		void delCaseThreeAdditionalLeft(Node *temp);
+		void delCaseThreeAdditionalRight(Node *temp);
 		
 		void in_ord_info(Node *temp);
 		void in_ord(Node *temp);
@@ -54,12 +65,14 @@ class avl
 		void pre_ord(Node *temp);
 
 		void insert(Node *temp);
+		void del(Node *temp);
 };
 
 
 avl::avl()
 {
 	temp = root = NULL;
+	flag = 0;
 }
 
 avl::~avl()
@@ -171,6 +184,10 @@ void avl:: pre_ord(Node *temp)
 
 
 
+
+
+
+
 ///////////////////////////////////////////////////////
 // cases Left
 
@@ -220,6 +237,10 @@ void avl::insertCaseFourLeft(Node *temp)
 
 
 
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////
 // case Right
 
@@ -229,7 +250,7 @@ void avl::insertCaseOneRight(Node *temp)
 	Node *temp2 = temp->right;
 	temp->right = temp2->right;
 	temp2->right = temp->right->left;
-	temp2->right->left = temp2; 
+	temp->right->left = temp2; 
 }
 
 void avl::insertCaseTwoRight(Node *temp)
@@ -264,6 +285,15 @@ void avl:: insertCaseFourRight(Node *temp)
 	insertCaseOneRight(temp);
 }
 ///////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
 
 
 
@@ -329,7 +359,7 @@ void avl::solvingBFL(Node *temp)
 		
 		if (temp->left->right->balanceFactor == -1)
 		{
-			cout<<"case -2-1"<<endl;
+			// cout<<"case -2-1"<<endl;
 			insertCaseOneLeft(temp);
 			fullDownUpdation(temp->left);
 			return;
@@ -337,7 +367,7 @@ void avl::solvingBFL(Node *temp)
 
 		if (temp->left->right->balanceFactor == 1)
 		{
-			cout<<"case -21"<<endl;
+			// cout<<"case -21"<<endl;
 			insertCaseFourLeft(temp);
 			fullDownUpdation(temp->left);
 			return;
@@ -349,7 +379,7 @@ void avl::solvingBFL(Node *temp)
 		
 		if (temp->left->left->balanceFactor == -1)
 		{
-			cout<<"case 2-1"<<endl;
+			// cout<<"case 2-1"<<endl;
 			insertCaseThreeLeft(temp);
 			fullDownUpdation(temp->left);
 			return;
@@ -357,7 +387,7 @@ void avl::solvingBFL(Node *temp)
 
 		if (temp->left->left->balanceFactor == 1)
 		{	
-			cout<<"case 21"<<endl;
+			// cout<<"case 21"<<endl;
 			insertCaseTwoLeft(temp);
 			fullDownUpdation(temp->left);
 			return;
@@ -454,9 +484,15 @@ void avl::solvingBFRoot(Node *temp)
 
 
 
+
+
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////
 // Balance factor calculation and height calculation
-
 void avl:: fullDownUpdation(Node *temp)
 {
 	if (temp == NULL)
@@ -525,7 +561,6 @@ void avl:: updateHeight(Node *temp)
 		temp->rightHeight = 0;
 	}
 }
-
 ////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -610,15 +645,457 @@ void avl::insert(Node *temp)
 		solvingBFRoot(temp);
 		fullDownUpdation(temp);
 	}
+}
 
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+void avl:: delCaseThreeAdditionalLeft(Node *temp)
+{
+	if (temp->right == NULL)
+	{
+		updateHeight(temp);
+		return;
+	}
+	if (temp->right != NULL)
+	{
+		delCaseThreeAdditionalLeft(temp->right);
+		updatingFlag(temp);
+		if (flag == 1)
+		{
+			solvingBFR(temp);
+		}
+	}
+}
+
+
+void avl:: delCaseThreeAdditionalRight(Node *temp)
+{
+	if (temp->right == NULL)
+	{
+		updateHeight(temp);
+		return;
+	}
+	if (temp->right != NULL)
+	{
+		delCaseThreeAdditionalRight(temp->left);
+		updatingFlag(temp);
+		if (flag == 1)
+		{
+			solvingBFL(temp);
+		}
+	}
+}
+
+
+
+void avl:: simpleDelCaseOne(Node *temp)
+{
+	if (temp->data == number && temp == root)
+	{
+		delete temp;
+		root = temp = NULL;
+		return;
+	}
+	if (number < temp->data)
+	{
+		delete temp->left;
+		temp->left = NULL;
+		return;
+	}
+	if (number > temp->data)
+	{
+		delete temp->right;
+		temp->right = NULL;
+		return;
+	}
 }
 
 
 
 
 
+void avl:: simpleDelCaseTwoA(Node *temp)
+{
+
+	if (temp->data == number && temp == root)
+	{
+		root = temp->left;
+		Node *temp2 = temp;
+		delete temp2;
+		temp = root;
+		return;
+	}
+	if (number < temp->data)
+	{
+		Node *temp2 = temp->left;
+		temp->left = temp->left->left;
+		delete temp2;
+		temp2 = NULL;
+		return;	
+	}
+	if (number > temp->data)
+	{
+		Node *temp2 = temp->right;
+		temp->right = temp->right->left;
+		delete temp2;
+		temp2 = NULL;
+		return;	
+	}
+}
 
 
+void avl:: simpleDelCaseTwoB(Node *temp)
+{
+	
+	if (temp->data == number && temp == root)
+	{
+		root = temp->right;
+		Node *temp2 = temp;
+		delete temp2;
+		temp = root;
+		return;
+	}
+	if (number < temp->data)
+	{
+		Node *temp2 = temp->left;
+		temp->left = temp->left->right;
+		delete temp2;
+		temp2 = NULL;
+		return;
+	}
+	if (number > temp->data)
+	{
+		Node *temp2 = temp->right;
+		temp->right = temp->right->right;
+		delete temp2;
+		temp2 = NULL;
+		return;
+	}
+}
+
+
+
+
+
+void avl::simpleDelCaseThree(Node *temp)
+{
+	if (temp->data == number && temp == root)
+	{
+		Node *temp2 = temp;
+		if (temp->left->right != NULL)
+		{
+			Node *temp3 = temp;
+			temp3 = temp3->left;
+			temp2 = temp2->left->right;
+			while(temp2->right != NULL)
+			{
+				temp3 = temp2;
+				temp2 = temp2->right;
+			}
+			if (temp2->left == NULL)
+			{
+				temp->data = temp2->data;
+				delete temp2;
+				temp3->right = NULL;
+				return;
+			}
+			if (temp2->left != NULL)
+			{
+				temp3->right = temp2->left;
+				temp->data = temp2->data;
+				delete temp2;
+				return; 
+			}
+			
+		}
+		else
+		{
+			temp2 = temp->left;
+			temp->left = temp2->left;
+			temp->data = temp2->data;
+			delete temp2;
+			temp2 = NULL;
+			return;
+		}
+	}
+
+	if (number < temp->data)
+	{
+		Node *temp2 = temp;
+		if (temp->left->left->right != NULL)
+		{
+			Node *temp3 = temp;
+			temp3 = temp3->left->left;
+			temp2 = temp2->left->left->right;
+			while(temp2->right != NULL)
+			{
+				temp3 = temp2;
+				temp2 = temp2->right;
+			}
+			if (temp2->left == NULL)
+			{
+				temp->left->data = temp2->data;
+				delete temp2;
+				temp3->right = NULL;
+				delCaseThreeAdditionalLeft(temp->left->left);
+				if (flag == 1)
+				{
+					solvingBFL(temp->left);
+				}
+				return;
+			}
+			if (temp2->left != NULL)
+			{
+				temp3->right = temp2->left;
+				temp->left->data = temp2->data;
+				delete temp2;
+				temp2 = NULL;
+				delCaseThreeAdditionalLeft(temp->left->left);
+				if (flag == 1)
+				{
+					solvingBFL(temp->left);
+				}
+				return; 
+			}
+			
+		}
+		else
+		{
+			temp2 = temp->left;
+			temp->left = temp2->left;
+			temp->left->right = temp2->right;
+			delete temp2;
+			temp2 = NULL;
+			updatingFlag(temp->left);
+			fullDownUpdation(temp->left);
+			if (flag == 1)
+			{
+				solvingBFL(temp);
+			}
+			return;
+		}
+	}
+
+	if (number > temp->data)
+	{
+		Node *temp2 = temp;
+		if (temp->right->right->left != NULL)
+		{
+			Node *temp3 = temp;
+			temp3 = temp3->right->right;
+			temp2 = temp2->right->right->left;
+			while(temp2->left != NULL)
+			{
+				temp3 = temp2;
+				temp2 = temp2->left;
+			}
+			if (temp2->right == NULL)
+			{
+				temp->right->data = temp2->data;
+				delete temp2;
+				temp3->left = NULL;
+				delCaseThreeAdditionalRight(temp->right->right);
+				if (flag == 1)
+				{
+					solvingBFR(temp->right);
+				}
+				return;
+			}
+			if (temp->right != NULL)
+			{
+				temp3->left = temp2->right;
+				temp->right->data = temp2->data;
+				delete temp2;
+				temp3->left = NULL;
+				delCaseThreeAdditionalRight(temp->right->right);
+				if (flag == 1)
+				{
+					solvingBFR(temp->right);
+				}
+				return; 
+			}
+			
+		}
+		else
+		{
+			temp2 = temp->right;
+			temp->right = temp2->right;
+			temp->right->left = temp2->left;
+			delete temp2;
+			temp2 = NULL;
+			updatingFlag(temp->right);
+			fullDownUpdation(temp->right);
+			if (flag == 1)
+			{
+				solvingBFR(temp->right);
+			}
+			return;
+		}
+	}
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// updating flag 
+
+void avl:: updatingFlag(Node *temp)
+{
+	if (temp->balanceFactor == 0)
+	{
+		fullDownUpdation(temp);
+		return;
+	}
+	else
+	{
+		fullDownUpdation(temp);
+		flag = 1;
+		return;
+	}	
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+void avl::del(Node *temp)
+{
+	if (root == NULL)
+	{
+		cout<<"Tree is empty"<<endl;
+		return;
+	}
+	if (temp->data == number)
+	{
+		if (temp->left == NULL && temp->right == NULL)
+		{
+			simpleDelCaseOne(temp);	
+		}
+		if (temp->left != NULL && temp->right == NULL)
+		{
+			simpleDelCaseTwoA(temp);
+		}
+		if (temp->left == NULL && temp->right != NULL)
+		{
+			simpleDelCaseTwoB(temp);
+		}
+		if (temp->left != NULL && temp->right != NULL)
+		{
+			simpleDelCaseThree(temp);
+		}
+
+	}
+	if (number < temp->data)
+	{
+		if (temp->left != NULL)
+		{	
+			if (temp->left->data == number)
+			{
+				if (temp->left->left == NULL && temp->left->right == NULL)
+				{
+					simpleDelCaseOne(temp);
+					updatingFlag(temp);
+					return;		
+				}
+				if (temp->left->left != NULL && temp->left->right == NULL)
+				{
+					simpleDelCaseTwoA(temp);
+					updatingFlag(temp);
+					return;	
+				}
+				if (temp->left->left == NULL && temp->left->right != NULL)
+				{
+					simpleDelCaseTwoB(temp);	
+					updatingFlag(temp);
+					return;
+				}
+				if (temp->left->left != NULL && temp->left->right != NULL)
+				{
+					simpleDelCaseThree(temp);
+					if (flag == 1)
+					{
+						fullDownUpdation(temp);
+						solvingBFL(temp);
+					}
+					return;
+				}
+			}
+			del(temp->left);
+			if (flag == 1)
+			{
+				solvingBFL(temp);
+				if (temp == root)
+				{
+					fullDownUpdation(temp);
+					solvingBFRoot(temp);
+				}
+			}
+			return;
+		}
+	}
+	if (number > temp->data)
+	{
+		if (temp->right != NULL)
+		{	
+			if (temp->right->data == number)
+			{
+				if (temp->right->left == NULL && temp->right->right == NULL)
+				{
+					simpleDelCaseOne(temp);
+					updatingFlag(temp);
+					return;		
+				}
+				if (temp->right->left != NULL && temp->right->right == NULL)
+				{
+					simpleDelCaseTwoA(temp);
+					updatingFlag(temp);
+					return;		
+				}
+				if (temp->right->left == NULL && temp->right->right != NULL)
+				{
+					simpleDelCaseTwoB(temp);
+					updatingFlag(temp);
+					return;		
+				}
+				if (temp->right->left != NULL && temp->right->right != NULL)
+				{
+					simpleDelCaseThree(temp);
+					if (flag == 1)
+					{
+						fullDownUpdation(temp);
+						solvingBFR(temp);
+					}
+					return;
+				}
+
+			}
+			del(temp->right);
+			if (flag == 1)
+			{
+				solvingBFR(temp);
+				if (temp == root)
+				{
+					fullDownUpdation(temp);
+					solvingBFRoot(temp);
+				}
+			}
+			return;
+		}
+	}
+}
 
 
 
@@ -634,20 +1111,24 @@ int main()
 	obj.insert(obj.root);
 	obj.number = 9;
 	obj.insert(obj.root);
-	obj.number = 45;
+	obj.in_ord_info(obj.root);
+	obj.in_ord(obj.root);
+	cout<<endl;
+	obj.number = 95;
 	obj.insert(obj.root);
-	obj.number = 7;
+	obj.number = 97;
 	obj.insert(obj.root);
+	obj.number = 15;
+	obj.del(obj.root);
+	// obj.insert(obj.root);
 	obj.number = 3;
 	obj.insert(obj.root);
-	obj.number = 77;
-	obj.insert(obj.root);
-	obj.number = 14;
-	obj.insert(obj.root);
-	obj.number = 8;
-	obj.insert(obj.root);
-	obj.number = 14;
-	obj.insert(obj.root);
+	// obj.number = 14;
+	// obj.insert(obj.root);
+	// obj.number = 8;
+	// obj.insert(obj.root);
+	// obj.number = 14;
+	// obj.insert(obj.root);
 	obj.in_ord_info(obj.root);
 	obj.in_ord(obj.root);
 	cout<<endl;
