@@ -27,8 +27,15 @@ class tbt
 
 		void fastInOrder(Node *temp);
 		Node* nextInOrder(Node *temp);
-		
 
+		void delCaseOne(Node *temp);
+		void delCaseTwoA(Node *temp);
+		void delCaseTwoB(Node *temp);
+		void delCaseThree(Node *temp);
+
+
+		
+		void del(Node *temp);
 		void insert(Node *temp);
 		void delAll(Node *temp);
 };
@@ -187,23 +194,33 @@ void tbt::insert(Node *temp)
 
 
 
-void bst:: delCaseOne(Node *temp)
+void tbt:: delCaseOne(Node *temp)
 {
 	if (temp->data == number && temp == root)
 	{
 		delete temp;
-		root = temp = NULL;
+		temp = NULL;
+		root->rCh = 0;
+		root->lCh = 0;
+		root->left = dummy;
+		root->right = dummy;
+		flag = 0;
 		return;
 	}
 	if (number < temp->data)
 	{
-		delete temp->left;
-		temp->left = NULL;
+		Node *temp2 = temp->left;
+		temp->left = temp->left->left;
+		temp->lCh = temp->left->lCh;
+		delete temp2;
+		return;
 	}
 	if (number > temp->data)
 	{
-		delete temp->right;
-		temp->right = NULL;
+		Node *temp2 = temp->right;
+		temp->right = temp->right->right;
+		temp->rCh = temp->left->rCh;
+		delete temp2;
 		return;
 	}
 }
@@ -211,12 +228,14 @@ void bst:: delCaseOne(Node *temp)
 
 
 
-void bst:: delCaseTwoA(Node *temp)
+void tbt:: delCaseTwoA(Node *temp)
 {
 
 	if (temp->data == number && temp == root)
 	{
 		root = temp->left;
+		dummy->left = root;
+		root->right = dummy;
 		Node *temp2 = temp;
 		delete temp2;
 		temp = root;
@@ -226,6 +245,11 @@ void bst:: delCaseTwoA(Node *temp)
 	{
 		Node *temp2 = temp->left;
 		temp->left = temp->left->left;
+		if (temp->left->rCh == 0)
+		{
+			temp->left->right = temp2->right;
+			temp->left->rCh =temp2->rCh;
+		}
 		delete temp2;
 		temp2 = NULL;
 		return;	
@@ -234,6 +258,11 @@ void bst:: delCaseTwoA(Node *temp)
 	{
 		Node *temp2 = temp->right;
 		temp->right = temp->right->left;
+		if (temp->right->rCh == 0)
+		{
+			temp->right->right = temp2->right;
+			temp->right->rCh =temp2->rCh;
+		}
 		delete temp2;
 		temp2 = NULL;
 		return;	
@@ -241,12 +270,14 @@ void bst:: delCaseTwoA(Node *temp)
 }
 
 
-void bst:: delCaseTwoB(Node *temp)
+void tbt:: delCaseTwoB(Node *temp)
 {
 	
 	if (temp->data == number && temp == root)
 	{
 		root = temp->right;
+		dummy->left = root;
+		root->left = dummy; 
 		Node *temp2 = temp;
 		delete temp2;
 		temp = root;
@@ -256,6 +287,11 @@ void bst:: delCaseTwoB(Node *temp)
 	{
 		Node *temp2 = temp->left;
 		temp->left = temp->left->right;
+		if (temp->left->lCh == 0)
+		{
+			temp->left->left = temp2->left;
+			temp->left->lCh = temp2->lCh;
+		}
 		delete temp2;
 		temp2 = NULL;
 		return;
@@ -264,6 +300,11 @@ void bst:: delCaseTwoB(Node *temp)
 	{
 		Node *temp2 = temp->right;
 		temp->right = temp->right->right;
+		if (temp->right->lCh == 0)
+		{
+			temp->right->left = temp2->left;
+			temp->right->lCh = temp2->lCh;
+		}
 		delete temp2;
 		temp2 = NULL;
 		return;
@@ -272,7 +313,7 @@ void bst:: delCaseTwoB(Node *temp)
 
 
 
-void bst::delCaseThree(Node *temp)
+void tbt::delCaseThree(Node *temp)
 {
 	if (temp->data == number && temp == root)
 	{
@@ -402,7 +443,7 @@ void bst::delCaseThree(Node *temp)
 
 
 
-void bst::del(Node *temp)
+void tbt::del(Node *temp)
 {
 	if (root == NULL)
 	{
@@ -475,7 +516,7 @@ void bst::del(Node *temp)
 			{
 				if (temp->right->right == NULL && temp->right->left == NULL)
 				{
-					cout<<"Good"<<endl;
+					// cout<<"Good"<<endl;
 					delCaseOne(temp);
 					return;
 				}
@@ -528,10 +569,11 @@ int main()
 	obj.insert(obj.root);
 	obj.number = 7;
 	obj.insert(obj.root);
-	// obj.number = 3;
-	// obj.insert(obj.root);
-	// obj.number = 8;
-	// obj.insert(obj.root);
+	obj.number = 3;
+	obj.insert(obj.root);
+	obj.fastInOrder(obj.dummy);
+	// obj.number = 70;
+	// obj.del(obj.root);
 	obj.fastInOrder(obj.dummy);
 	// obj.number = 14;
 	// obj.insert(obj.root);
