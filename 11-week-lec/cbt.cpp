@@ -13,19 +13,25 @@ class cbt
 {
 	private:
 		Node *temp;
-		int height;
+		
 		int localHeight;
 		int countNode;
+		Node *searchTemp;
+		Node *delTemp;
 	public:
+		int height;
 		Node *root;
 		int number;
 		int flag;
 		cbt();
-		// ~cbt();
-		// void delAll(Node *temp);
+		~cbt();
+		void delAll(Node *temp);
 		void inOrder(Node *temp);
 		void insert(Node *temp);
 		int power(int height, int n);
+		void del(Node *temp);
+		void search(Node *temp);
+		void lowerBubble(Node *temp);
 };
 
 
@@ -39,22 +45,32 @@ cbt::cbt()
 	number=0;
 }
 
-// cbt::~cbt()
-// {
-// 	delAll(root);
-// }
+cbt::~cbt()
+{
+	// delAll(root);
 
-// void cbt::delAll(Node *temp)
-// {
-// 	if (temp->left!=NULL)
-// 		delAll(temp->left);
-// 	if (temp->right!=NULL)
-// 		delAll(temp->left);
-// 	delete temp;
-// }
+}
+
+void cbt::delAll(Node *temp)
+{
+	if (temp == NULL)
+	{
+		return;
+	}
+	if (temp->left!=NULL)
+		delAll(temp->left);
+	if (temp->right!=NULL)
+		delAll(temp->right);
+	delete temp;
+}
 
 void cbt::inOrder(Node *temp)
 {
+	if (temp==NULL)
+	{
+		cout<<"Tree is empty"<<endl;
+		return;
+	}
 	if (temp->left != NULL)
 		inOrder(temp->left);
 	cout<<temp->data<<" ";
@@ -69,12 +85,14 @@ void cbt::inOrder(Node *temp)
 
 void cbt::insert(Node *temp)
 {
-
-
+	if(temp == root)
+	{
+		flag = 0;
+	}
 
 	if (root == NULL)
 	{
-		cout<<"1"<<endl;
+		// cout<<"1"<<endl;
 		temp=new Node;
 		temp->data = number;
 		temp->left=NULL;
@@ -87,7 +105,7 @@ void cbt::insert(Node *temp)
 
 	if (((power(2,height+1))-1) == countNode) 
 	{
-		cout<<"2"<<endl;
+		// cout<<"2"<<endl;
 		while(temp->left != NULL)
 			temp = temp->left;
 		Node *temp2 = new Node;
@@ -103,7 +121,7 @@ void cbt::insert(Node *temp)
 
 	if (height-localHeight == 1 && temp->left != NULL && temp->right == NULL)
 	{
-		cout<<"3"<<endl;
+		// cout<<"3"<<endl;
 		Node *temp2 = new Node;
 		temp2->data = number;
 		temp2->right = NULL;
@@ -116,7 +134,7 @@ void cbt::insert(Node *temp)
 
 	if (height-localHeight == 1 && temp->left == NULL && temp->right == NULL)
 	{
-		cout<<"4"<<endl;
+		// cout<<"4"<<endl;
 		Node *temp2 = new Node;
 		temp2->data = number;
 		temp2->right = NULL;
@@ -129,7 +147,7 @@ void cbt::insert(Node *temp)
 
 	if (temp->left != NULL && flag == 0)
 	{	
-		cout<<"5"<<endl;
+		// cout<<"5"<<endl;
 		localHeight += 1;
 		insert(temp->left);
 		localHeight -= 1;
@@ -137,7 +155,7 @@ void cbt::insert(Node *temp)
 
 	if (temp->right != NULL && flag == 0)
 	{
-		cout<<"6"<<endl;
+		// cout<<"6"<<endl;
 		localHeight += 1;
 		insert(temp->right);
 		localHeight -= 1;
@@ -150,6 +168,11 @@ void cbt::insert(Node *temp)
 }
 
 
+
+
+
+
+
 int cbt::power(int num, int n)
 {
 	int result = 1;
@@ -159,6 +182,148 @@ int cbt::power(int num, int n)
 	}
 	return result;
 }
+
+
+
+void cbt::del(Node *temp)
+{
+	if (temp == root)
+	{
+		flag = 0;
+	}
+
+	if (root == NULL)
+	{
+		// cout<<"1"<<endl;
+		cout<<"tree is empty"<<endl;
+		return;
+	}
+	if (temp->data == number && temp->left == NULL && temp->right == NULL && temp->data==root->data)
+	{
+		
+		delete temp;
+		root = temp = NULL;
+		countNode -= 1;
+		return;
+	}
+	if (temp->data == number && temp->left != NULL  && root == temp)
+	{
+		// cout<<"1"<<endl;
+		Node *temp2 = root;
+		root = root->left;
+		root->right= temp2->right;
+		delete temp2;
+		return;
+	}
+	
+
+	if ((power(2,height)) == countNode) 
+	{
+		// cout<<"2"<<endl;
+		while(temp->left->left != NULL)
+			temp = temp->left;
+		search(root);
+		searchTemp->data = temp->left->data;
+		delete temp->left;
+		temp->left = NULL;
+		height -= 1;
+		countNode -=1;
+		flag = 1;
+		return;
+	}
+
+	if (((power(2,height+1))-1) == countNode)	
+	{
+		// cout<<"3"<<endl;
+		while(temp->right->right != NULL)
+			temp = temp->right;
+		search(root);
+		// cout<<"search: "<<searchTemp->data<<endl;
+		searchTemp->data = temp->right->data;
+		// cout<<"search: "<<searchTemp->data<<endl;
+		delete temp->right;
+		temp->right = NULL;
+		countNode -=1;
+		flag = 1;
+		return;
+	}
+
+	if (height-localHeight == 1)
+	{
+		// cout<<"4"<<endl;
+		if (temp->left != NULL && temp->right != NULL)
+		{
+			delTemp = temp;
+		}
+		if (temp->left != NULL && temp->right == NULL)
+		{
+			search(root);
+			searchTemp->data = temp->left->data;
+			delete temp->left;
+			temp->left = NULL;
+			countNode -=1;
+			flag = 1;
+			return;
+
+		}
+	}
+
+	if (temp->left != NULL && flag == 0)
+	{	
+		// cout<<"5"<<endl;
+		localHeight += 1;
+		del(temp->left);
+		localHeight -= 1;
+	}
+
+	if (temp->right != NULL && flag == 0)
+	{
+		// cout<<"6"<<endl;
+		localHeight += 1;
+		del(temp->right);
+		localHeight -= 1;
+	}
+	
+	return;
+}
+
+
+void cbt::search(Node *temp)
+{
+	if (temp->data == number)
+	{
+		lowerBubble(temp);
+		return;
+	}
+	if (temp->left != NULL)
+		search(temp->left);
+	if (temp->right != NULL)
+		search(temp->right);
+}
+
+void cbt:: lowerBubble(Node *temp)
+{
+	if (temp->left == NULL)
+	{
+		searchTemp = temp;
+		return;
+	}
+	if (temp->left != NULL)
+	{
+		temp->data = temp->left->data;
+		lowerBubble(temp->left);
+	}
+	// if (temp->left != NULL && temp->right != NULL)
+	// {
+	// 	if (temp->left->data > temp->right->data)
+	// 	{
+	// 		/* code */
+	// 	}
+	// }
+}
+
+
+
 
 int main()
 {
@@ -171,36 +336,40 @@ int main()
 	obj.insert(obj.root);
 	obj.number = 4;
 	obj.insert(obj.root);
-	obj.inOrder(obj.root);
-	obj.flag = 0;
-	cout<<endl;
+	// obj.inOrder(obj.root);
+	// cout<<endl;
 	obj.number = 7;
 	obj.insert(obj.root);
-	obj.flag = 0;
 	obj.number = 6;
 	obj.insert(obj.root);
-	obj.flag = 0;
 	obj.number = 71;
 	obj.insert(obj.root);
-	obj.flag = 0;
-	obj.number = 62;
-	obj.insert(obj.root);
-	obj.flag = 0;
-	obj.number = 9;
-	obj.insert(obj.root);
-	obj.flag = 0;
+	// obj.number = 62;
+	// obj.insert(obj.root);
+	// obj.number = 9;
+	// obj.insert(obj.root);
 	obj.number = 11;
 	obj.insert(obj.root);
-	obj.flag = 0;
-	obj.number = 25;
+	// obj.number = 25;
+	// obj.insert(obj.root);
+	// obj.number = 36;
+	// obj.insert(obj.root);
+	// obj.number = 57;
+	// obj.insert(obj.root);
+	obj.inOrder(obj.root);
+	cout<<endl;
+	// cout<<obj.height<<endl;
+	obj.number = 4;
+	obj.del(obj.root);
+	// obj.insert(obj.root=NULL);
+	// obj.number = 4;
+	// obj.insert(obj.root);
+	obj.inOrder(obj.root);
+	cout<<endl;
+	obj.number = 2;
+	obj.del(obj.root);
+	obj.number = 77;
 	obj.insert(obj.root);
-	obj.flag = 0;
-	obj.number = 36;
-	obj.insert(obj.root);
-	obj.flag = 0;
-	obj.number = 57;
-	obj.insert(obj.root);
-	obj.flag = 0;
 	obj.inOrder(obj.root);
 	cout<<endl;
 	return 0;
