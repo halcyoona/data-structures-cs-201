@@ -190,6 +190,7 @@ void cbt::del(Node *temp)
 	if (temp == root)
 	{
 		flag = 0;
+		delTemp = NULL;
 	}
 
 	if (root == NULL)
@@ -206,7 +207,7 @@ void cbt::del(Node *temp)
 		countNode -= 1;
 		return;
 	}
-	if (temp->data == number && temp->left != NULL  && root == temp)
+	if (temp->data == number && temp->left != NULL  && root == temp && temp->left->left == NULL)
 	{
 		// cout<<"1"<<endl;
 		Node *temp2 = root;
@@ -283,6 +284,15 @@ void cbt::del(Node *temp)
 		del(temp->right);
 		localHeight -= 1;
 	}
+	if (temp == root)
+	{
+		if (delTemp != NULL)
+		{
+			searchTemp->data = delTemp->right->data;
+			delete delTemp->right;
+			delTemp->right = NULL;
+		}
+	}
 	
 	return;
 }
@@ -313,13 +323,6 @@ void cbt:: lowerBubble(Node *temp)
 		temp->data = temp->left->data;
 		lowerBubble(temp->left);
 	}
-	// if (temp->left != NULL && temp->right != NULL)
-	// {
-	// 	if (temp->left->data > temp->right->data)
-	// 	{
-	// 		/* code */
-	// 	}
-	// }
 }
 
 
