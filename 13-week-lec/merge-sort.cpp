@@ -26,11 +26,11 @@ void merge:: mergeSort(int size, int *start, int *end)
 {
 	if (size  <= 1) 
 	{
-		cout<<"size "<<size<<endl;
+		// cout<<"size "<<size<<endl;
 		return;
 	}
 	
-	cout<<"size " <<size<<endl;
+	// cout<<"size " <<size<<endl;
 	int mid = size / 2;
 	int size2 = size-mid;
 	int *start1 = start;
@@ -44,27 +44,31 @@ void merge:: mergeSort(int size, int *start, int *end)
 }
 
 
-void merge:: merging(int size1, int *start1, int *start2)
+void merge:: merging(int size1, int *st1, int *st2)
 {
 	int flag = 0;
-	cout<<"count "<<"good"<<endl;
-
-	for (int i = 0; i < size1; i++)
+	// cout<<"count "<<"good"<<endl;
+	for (int j = 0; j < size1; j++)
 	{
-		cout<<"start1 "<<*start1<<" start2 :"<<*start2<<endl;
-		if (*start2 < *start1)
+		int *start1 = st1;
+		int *start2 = st2;
+		for (int i = 0; i < size1; i++)
 		{
-			int temp = *start1;
-			*start1 = *start2;
-			*start2 = temp;
-			start1++;
-			i--;
+			// cout<<"start1 "<<*start1<<" start2 :"<<*start2<<endl;
+			if (*start2 < *start1)
+			{
+				int temp = *start1;
+				*start1 = *start2;
+				*start2 = temp;
+				start1++;
+				start2++;
+			}
+			else
+			{		
+				start1++;
+			}
+			// cout<<"start1 "<<*start1<<" start2 :"<<*start2<<endl;
 		}
-		else
-		{		
-			start1++;
-		}
-		cout<<"start1 "<<*start1<<" start2 :"<<*start2<<endl;
 	}
 
 }
@@ -83,9 +87,9 @@ int main()
 	int a[12] = {2,5,1,9,24,55,67,7,99,22,100,25};	
 	merge obj(a, 12);
 	int *start = a;
-	cout<<"start "<<*start<<endl;
+	// cout<<"start "<<*start<<endl;
 	int *end = a+11;
-	cout<<"end "<<*end<<endl;
+	// cout<<"end "<<*end<<endl;
 	obj.mergeSort(12, start, end);
 	obj.show();
 	return 0;
