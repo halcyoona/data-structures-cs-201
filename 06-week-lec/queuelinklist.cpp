@@ -57,6 +57,15 @@ void queue::dQueue()
 		cout<<"underflow"<<endl;
 		return;
 	}
+
+	if (front == rear)
+	{
+		node *temp = front;
+		delete temp;
+		front = NULL;
+		rear = NULL;
+		return;
+	}
 	Node *temp = front;
 	front = front->next;
 	size++;
