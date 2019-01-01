@@ -178,7 +178,7 @@ void graph::breadthFirst()
 		{
 			int num = obj.dQueue();
 			temp1 = searchingIndexInVertex(temp, num);
-			cout<<temp1->data<<endl;
+			// cout<<temp1->data<<endl;
 			temp = head;
 			list *t = temp1->listHead;	
 			while(t != NULL)
@@ -190,8 +190,7 @@ void graph::breadthFirst()
 				if (search(temp1->num) == 0)
 				{	
 					obj.eQueue(temp1->num);
-					cout<<"node"<<temp1->num<<endl;
-					*(arr+count) = temp->num;
+					*(arr+count) = temp1->num;
 					count += 1;
 					cout<<temp1->data<<" ";
 				}
